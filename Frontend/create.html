@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Biodata – VivahSaathi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body { overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+    .create-layout { flex: 1; display: grid; grid-template-columns: 260px 1fr 340px; overflow: hidden; }
+    @media (max-width: 1024px) {
+      .create-layout { grid-template-columns: 220px 1fr; }
+      .preview-panel { display: none; }
+    }
+    @media (max-width: 640px) {
+      .create-layout { grid-template-columns: 1fr; }
+      .wizard-sidebar { display: none; }
+    }
+    .form-area { overflow-y: auto; }
+    .preview-inner { overflow-y: auto; }
+    .radio-option {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 12px 16px; cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .radio-option:hover { border-color: rgba(212,168,83,0.4); }
+    .radio-option.selected { border-color: var(--gold); background: rgba(212,168,83,0.07); }
+    .radio-dot {
+      width: 16px; height: 16px; border-radius: 50%;
+      border: 1.5px solid var(--border); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.2s;
+    }
+    .radio-option.selected .radio-dot { border-color: var(--gold); }
+    .radio-dot::after {
+      content: ''; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--gold); opacity: 0; transition: opacity 0.2s;
+    }
+    .radio-option.selected .radio-dot::after { opacity: 1; }
+    .photo-upload-zone {
+      border: 1.5px dashed var(--border); border-radius: 12px;
+      padding: 32px; text-align: center; cursor: pointer;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .photo-upload-zone:hover {
+      border-color: rgba(212,168,83,0.5);
+      background: rgba(212,168,83,0.04);
+    }
+    .biodata-preview {
+      background: white; color: #1a0f08;
+      border-radius: 8px; padding: 24px;
+      font-family: 'Cormorant Garamond', serif;
+      min-height: 500px; position: relative;
+    }
+    .preview-header { text-align: center; border-bottom: 1px solid #d4a853; padding-bottom: 12px; margin-bottom: 16px; }
+    .preview-symbol { font-size: 1.5rem; color: #8b1a2a; margin-bottom: 4px; }
+    .preview-title { font-size: 0.7rem; letter-spacing: 0.2em; color: #8b1a2a; font-family: 'DM Sans', sans-serif; text-transform: uppercase; }
+    .preview-section-title {
+      font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: #8b1a2a; font-family: 'DM Sans', sans-serif; font-weight: 600;
+      border-bottom: 1px solid rgba(212,168,83,0.4); padding-bottom: 4px;
+      margin-bottom: 10px; margin-top: 14px;
+    }
+    .preview-row { display: flex; gap: 8px; margin-bottom: 5px; font-size: 0.8rem; }
+    .preview-label { color: #5a3020; font-weight: 600; min-width: 100px; flex-shrink: 0; }
+    .preview-value { color: #1a0f08; }
+    .preview-photo-box {
+      position: absolute; top: 60px; right: 24px;
+      width: 70px; height: 90px; border: 1px solid #d4a853;
+      display: flex; align-items: center; justify-content: center;
+      background: #fdf5ec; font-size: 0.6rem; color: #8a6030; text-align: center;
+    }
+  </style>
+</head>
+<body class="bg-[#0c0a09] text-[#f5f0ea]">
+
+  <!-- Top Bar -->
+  <div class="flex items-center justify-between px-6 py-4 border-b border-[#2a2118] flex-shrink-0">
+    <a href="index.html" class="flex items-center gap-3 group">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" class="text-[#d4a853]">
+        <path d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+      </svg>
+      <span class="font-['Cormorant_Garamond'] text-lg"><span class="text-[#d4a853]">Vivah</span>Saathi</span>
+    </a>
+
+    <div class="hidden md:block flex-1 max-w-sm mx-8">
+      <div class="flex items-center justify-between mb-1">
+        <span class="font-['DM_Sans'] text-xs text-[#8a7b72]">Progress</span>
+        <span class="font-['DM_Sans'] text-xs text-[#d4a853]" id="progressLabel">Step 1 of 5</span>
+      </div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progressBar" style="width:20%"></div>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button onclick="downloadBiodata()" class="hero-cta-primary font-['DM_Sans'] text-xs tracking-wider px-5 py-2 flex items-center gap-2">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        Download PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Layout -->
+  <div class="create-layout">
+
+    <!-- ── Sidebar ── -->
+    <div class="wizard-sidebar flex flex-col p-4 gap-1 border-r border-[#2a2118]">
+      <p class="font-['DM_Sans'] text-xs tracking-[0.2em] uppercase text-[#5a4f47] px-3 mb-3 mt-1">Your Information</p>
+
+      <div class="wizard-step active" data-step="1" onclick="goToStep(1)">
+        <div class="wizard-step-num">1</div>
+        <span class="wizard-step-label">Personal Details</span>
+      </div>
+      <div class="wizard-step" data-step="2" onclick="goToStep(2)">
+        <div class="wizard-step-num">2</div>
+        <span class="wizard-step-label">Professional Info</span>
+      </div>
+      <div class="wizard-step" data-step="3" onclick="goToStep(3)">
+        <div class="wizard-step-num">3</div>
+        <span class="wizard-step-label">Family Details</span>
+      </div>
+      <div class="wizard-step" data-step="4" onclick="goToStep(4)">
+        <div class="wizard-step-num">4</div>
+        <span class="wizard-step-label">Contact & Photo</span>
+      </div>
+      <div class="wizard-step" data-step="5" onclick="goToStep(5)">
+        <div class="wizard-step-num">5</div>
+        <span class="wizard-step-label">Template & Style</span>
+      </div>
+
+      <div class="mt-auto">
+        <p class="font-['DM_Sans'] text-xs text-[#3a322b] px-3">
+          Your data stays on your device.<br/>Nothing is stored on our servers.
+        </p>
+      </div>
+    </div>
+
+    <!-- ── Form Area ── -->
+    <div class="form-area p-8 bg-[#0c0a09]" id="formArea">
+      <!-- Steps rendered by JS -->
+    </div>
+
+    <!-- ── Preview Panel ── -->
+    <div class="preview-panel preview-inner p-6 bg-[#0f0c08]">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-['Cormorant_Garamond'] text-lg font-bold text-[#f5f0ea]">Live Preview</h3>
+        <button class="font-['DM_Sans'] text-xs text-[#d4a853] hover:underline tracking-wider uppercase">Full Screen</button>
+      </div>
+
+      <div class="biodata-preview" id="biodataPreview">
+        <div class="preview-photo-box" id="previewPhoto">📷 Photo</div>
+
+        <div class="preview-header">
+          <div class="preview-symbol" id="previewSymbol">ॐ</div>
+          <div class="preview-title">Marriage Biodata</div>
+        </div>
+
+        <div class="preview-section-title">Personal Details</div>
+        <div class="preview-row"><span class="preview-label">Name:</span><span class="preview-value" id="pvName">—</span></div>
+        <div class="preview-row"><span class="preview-label">Date of Birth:</span><span class="preview-value" id="pvDob">—</span></div>
+        <div class="preview-row"><span class="preview-label">Place of Birth:</span><span class="preview-value" id="pvPob">—</span></div>
+        <div class="preview-row"><span class="preview-label">Height:</span><span class="preview-value" id="pvHeight">—</span></div>
+        <div class="preview-row"><span class="preview-label">Religion:</span><span class="preview-value" id="pvReligion">—</span></div>
+        <div class="preview-row"><span class="preview-label">Caste:</span><span class="preview-value" id="pvCaste">—</span></div>
+
+        <div class="preview-section-title">Education & Career</div>
+        <div class="preview-row"><span class="preview-label">Education:</span><span class="preview-value" id="pvEdu">—</span></div>
+        <div class="preview-row"><span class="preview-label">Occupation:</span><span class="preview-value" id="pvOcc">—</span></div>
+        <div class="preview-row"><span class="preview-label">Income:</span><span class="preview-value" id="pvIncome">—</span></div>
+
+        <div class="preview-section-title">Family Details</div>
+        <div class="preview-row"><span class="preview-label">Father:</span><span class="preview-value" id="pvFather">—</span></div>
+        <div class="preview-row"><span class="preview-label">Mother:</span><span class="preview-value" id="pvMother">—</span></div>
+        <div class="preview-row"><span class="preview-label">Siblings:</span><span class="preview-value" id="pvSiblings">—</span></div>
+
+        <div class="preview-section-title">Contact</div>
+        <div class="preview-row"><span class="preview-label">Phone:</span><span class="preview-value" id="pvPhone">—</span></div>
+        <div class="preview-row"><span class="preview-label">Email:</span><span class="preview-value" id="pvEmail">—</span></div>
+        <div class="preview-row"><span class="preview-label">Address:</span><span class="preview-value" id="pvAddress">—</span></div>
+      </div>
+
+      <p class="font-['DM_Sans'] text-xs text-[#3a322b] text-center mt-4">Preview updates as you type</p>
+    </div>
+  </div>
+
+  <!-- Bottom nav for mobile -->
+  <div class="md:hidden flex-shrink-0 border-t border-[#2a2118] flex">
+    <button onclick="prevStep()" class="flex-1 py-4 font-['DM_Sans'] text-sm text-[#8a7b72]">← Back</button>
+    <button onclick="nextStep()" class="flex-1 py-4 font-['DM_Sans'] text-sm text-[#d4a853] font-600">Next →</button>
+  </div>
+
+  <script src="create.js"></script>
+</body>
+</html>
