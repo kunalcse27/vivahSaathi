@@ -1,7 +1,3 @@
-// ═══════════════════════════════════════════
-//   VivahSaathi — create.js  (Enhanced v2)
-//   Confidential Fields · 10 Templates · Razorpay
-// ═══════════════════════════════════════════
 
 /* ── State ─────────────────────────────── */
 let currentStep = 1;
@@ -14,7 +10,7 @@ const formData = {
   brothers: '', sisters: '', familyType: '', familyValues: '',
   phone: '', email: '', address: '',
   symbol: 'ॐ', template: 1,
-  presetPhoto: '',              // ← ADD THIS
+  presetPhoto: '',              
   confidentialFields: [],
 };
 
