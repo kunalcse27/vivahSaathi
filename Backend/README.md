@@ -18,9 +18,6 @@ Biodata maker/
 
 ## Step 1 — Install dependencies
 
-```powershell
-# Make sure venv is active
-& "c:\Users\kunal\Desktop\Biodata maker\.venv\Scripts\Activate.ps1"
 
 # Install all packages
 pip install -r requirements.txt
@@ -34,14 +31,7 @@ pip install -r requirements.txt
 # Create .env file from example
 copy .env.example .env
 notepad .env
-```
-
-Minimum required for local testing (SQLite, mock payments):
-```
-RAZORPAY_KEY_ID=rzp_test_XXXXXXXXXXXXXXXX
-RAZORPAY_KEY_SECRET=your_secret
-ALLOWED_ORIGINS=http://localhost:8000,http://127.0.0.1:8000
-```
+````
 
 ---
 
