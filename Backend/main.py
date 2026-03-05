@@ -1,7 +1,3 @@
-# ═══════════════════════════════════════════
-#   VivahSaathi — main.py  (Enhanced v2)
-#   10 Templates · Razorpay · Confidential Fields
-# ═══════════════════════════════════════════
 
 import io, os, hmac, hashlib, secrets, time
 from datetime import datetime
